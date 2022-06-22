@@ -28,7 +28,7 @@ namespace EmailPerformanceReport
         /// <summary>
         /// Asynchronously retrieves all emails from the NGP 7 API, including the statistics and variants for each email and the statistics of the variants. Result is not sorted.
         /// </summary>
-        public async Task<IEnumerable<Email>> GetAllEmails()
+        public async Task<IEnumerable<Email>> GetAllEmailsAsync()
         {
 
             /*
@@ -73,7 +73,7 @@ namespace EmailPerformanceReport
             //This query does not return the statistics or variants, so each email will have to be requeried to get that info
             foreach (var resEmail in resEmails)
             {
-                var email = await GetEmailDetails(resEmail.emailMessageId);
+                var email = await GetEmailDetailsAsync(resEmail.emailMessageId);
                 if (email != null)
                 {
                     emails.Add(email);
@@ -87,7 +87,7 @@ namespace EmailPerformanceReport
         /// Retrieves a single email from the NGP 7 API, including the statistics of the email, its variants, and the statistics of the variants.
         /// </summary>
         /// <param name="emailMessageId">The email message id of the email to retrieve</param>
-        public async Task<Email?> GetEmailDetails(int? emailMessageId)
+        public async Task<Email?> GetEmailDetailsAsync(int? emailMessageId)
         {
             if (!emailMessageId.HasValue) 
             {
@@ -113,7 +113,7 @@ namespace EmailPerformanceReport
                 var variants = new List<EmailVariant>(email.variants.Count());
                 foreach (var resVariant in email.variants)
                 {
-                    var variant = await GetVariantDetails(emailMessageId, resVariant.emailMessageVariantId);
+                    var variant = await GetVariantDetailsAsync(emailMessageId, resVariant.emailMessageVariantId);
                     if (variant != null)
                     {
                         variants.Add(variant);
@@ -131,7 +131,7 @@ namespace EmailPerformanceReport
         /// </summary>
         /// <param name="emailMessageId">The email message id of the email the variant is a variant of</param>
         /// <param name="emailMessageVariantId">The email message variant id of the variant</param>
-        public async Task<EmailVariant?> GetVariantDetails(int? emailMessageId, int? emailMessageVariantId)
+        public async Task<EmailVariant?> GetVariantDetailsAsync(int? emailMessageId, int? emailMessageVariantId)
         {
             if (!emailMessageId.HasValue || !emailMessageVariantId.HasValue)
             {

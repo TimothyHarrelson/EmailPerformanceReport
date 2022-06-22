@@ -24,7 +24,7 @@ namespace EmailPerformanceReport
                 _fileName = args[2];
             }
 
-            var emails = await api.GetAllEmails();
+            var emails = await api.GetAllEmailsAsync();
             SortEmailsByIdDesc(ref emails);
             CreateEmailReportCSV(emails);
 
