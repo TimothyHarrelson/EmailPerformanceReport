@@ -71,9 +71,16 @@ namespace EmailPerformanceReport
             } while (true);
 
             //This query does not return the statistics or variants, so each email will have to be requeried to get that info
+            var emailTasks = new List<Task<Email?>>();
             foreach (var resEmail in resEmails)
             {
-                var email = await GetEmailDetailsAsync(resEmail.emailMessageId);
+                emailTasks.Add(GetEmailDetailsAsync(resEmail.emailMessageId));   
+            }
+
+            var emailDetails = await Task.WhenAll(emailTasks);
+
+            foreach(var email in emailDetails)
+            {
                 if (email != null)
                 {
                     emails.Add(email);
@@ -111,9 +118,16 @@ namespace EmailPerformanceReport
 
                 //This query does not return the statistics of the variants, so each email will have to be requeried to get that info
                 var variants = new List<EmailVariant>(email.variants.Count());
+                var variantDetailTasks = new List<Task<EmailVariant?>>(email.variants.Count());
                 foreach (var resVariant in email.variants)
                 {
-                    var variant = await GetVariantDetailsAsync(emailMessageId, resVariant.emailMessageVariantId);
+                    variantDetailTasks.Add(GetVariantDetailsAsync(emailMessageId, resVariant.emailMessageVariantId));
+                }
+
+                var variantDetails = await Task.WhenAll(variantDetailTasks);
+
+                foreach (var variant in variantDetails)
+                {
                     if (variant != null)
                     {
                         variants.Add(variant);

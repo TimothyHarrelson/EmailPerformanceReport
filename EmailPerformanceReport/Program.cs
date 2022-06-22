@@ -25,19 +25,10 @@ namespace EmailPerformanceReport
             }
 
             var emails = await api.GetAllEmailsAsync();
-            SortEmailsByIdDesc(ref emails);
+            emails = emails.OrderByDescending(email => email.emailMessageId);
             CreateEmailReportCSV(emails);
 
             Console.WriteLine($"Email report complete, file is {_fileName}.csv");
-        }
-
-        /// <summary>
-        /// Sorts a list of emails by the id from greatest to smallest.
-        /// </summary>
-        /// <param name="emails">A list of emails to sort. The reference will be changed to a new object created by this function.</param>
-        private static void SortEmailsByIdDesc(ref IEnumerable<Email> emails)
-        {
-            emails = emails.OrderByDescending(email => email.emailMessageId);
         }
 
         /// <summary>
